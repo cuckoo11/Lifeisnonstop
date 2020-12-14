@@ -1,26 +1,33 @@
 let life;
-let choice;
+let choice = [];
 let color;
 
-function setup() {
-  createCanvas(300, 1000);
-  life = new Life();
-  choice = new Choice();
+let threshold = 30;
+let accChangeX = 0;
+let accChangeY = 0;
+let accChangeT = 0;
 
-  color = random(0,255),random(0,255),random(0,255);
+function setup() {
+  createCanvas(1000, 800);
+  life = new Life();
+
+  for (let i = 0; i < 500; i++) {
+  choice.push(new Choice());
+  }
+
 }
 
 function draw() {
-  let gravity = createVector(0,0.01);
-
   background(220);
   life.show();
   life.move();
   life.update();
 
-  choice.show();
-  choice.update();
-  choice.applyForce(gravity);
+  for (let i = 0; i < choice.length; i++) {
+    choice[i].move();
+    choice[i].update();
+    choice[i].turn();
+  }
 }
 
 class Life {
@@ -33,14 +40,11 @@ class Life {
   update(){
     this.vel.add(this.acc);
     this.pos.add(this.vel);
-
-    this.pos.x = this.pos.x + random(-2, 2);
-    this.pos.y = this.pos.y + random(-2, 2);
   }
 
   show(){
     ellipse(this.pos.x,this.pos.y,50,50);
-    fill(color);
+    fill(255,255,255);
   }
 
   move(){
@@ -49,25 +53,89 @@ class Life {
   }
 }
 
+
+function checkForShake() {
+  accChangeX = abs(accelerationX - pAccelerationX);
+  accChangeY = abs(accelerationY - pAccelerationY);
+  accChangeT = accChangeX + accChangeY;
+
+  if (accChangeT >= threshold) {
+    for (let i = 0; i < choice.length; i++) {
+      choice[i].shake();
+      choice[i].turn();
+    }
+  }
+
+  else {
+    for (let i = 0; i < choice.length; i++) {
+      choice[i].stopShake();
+      choice[i].turn();
+      choice[i].move();
+      choice[i].update();
+    }
+  }
+}
+
 class Choice {
-  constructor(){
-    this.pos = createVector(random(width),10);
-    this.vel = createVector (0,0);
-    this.acc = createVector(0,0);
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.diameter = random(10, 30);
+    this.xspeed = random(-2, 2);
+    this.yspeed = random(-2, 2);
+    this.oxspeed = this.xspeed;
+    this.oyspeed = this.yspeed;
+    this.direction = 0.7;
   }
 
-  applyForce(force) {
-    let f = force.copy();
-    this.acc.add(f);
+  move() {
+    this.x += this.xspeed * this.direction;
+    this.y += this.yspeed * this.direction;
   }
 
-  update(){
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-  }
-  show(){
-    ellipse(this.pos.x,this.pos.y,50,50);
-    fill(255,255,255,90);
+  turn() {
+    if (this.x < 0) {
+      this.x = 0;
+      this.direction = -this.direction;
+    } else if (this.y < 0) {
+      this.y = 0;
+      this.direction = -this.direction;
+    } else if (this.x > width - 20) {
+      this.x = width - 20;
+      this.direction = -this.direction;
+    } else if (this.y > height - 20) {
+      this.y = height - 20;
+      this.direction = -this.direction;
+    }
   }
 
+  shake() {
+    this.xspeed += random(5, accChangeX / 3);
+    this.yspeed += random(5, accChangeX / 3);
+  }
+
+  stopShake() {
+    if (this.xspeed > this.oxspeed) {
+      this.xspeed -= 0.6;
+    } else {
+      this.xspeed = this.oxspeed;
+    }
+    if (this.yspeed > this.oyspeed) {
+      this.yspeed -= 0.6;
+    } else {
+      this.yspeed = this.oyspeed;
+    }
+  }
+
+  update() {
+    ellipse(this.x, this.y, this.diameter, this.diameter);
+    fill(255,255,200);
+
+    if(life.pos.y>this.y && life.pos.x>this.x){
+     this.stop();
+    }
+  }
+  stop(){
+    fill(0,0,0,0);
+  }
 }
