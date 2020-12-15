@@ -9,7 +9,6 @@ let accChangeX = 0;
 let accChangeY = 0;
 let accChangeT = 0;
 
-
 function setup() {
   createCanvas(displayWidth,displayHeight);
   life = new Life();
@@ -34,6 +33,8 @@ function draw() {
     choice[i].stop();
   }
 }
+
+
 
 class Life {
   constructor() {
@@ -68,9 +69,6 @@ class Choice {
     this.oxspeed = this.xspeed;
     this.oyspeed = this.yspeed;
     this.direction = 0.7;
-
-    r = random(5,10);
-
   }
 
   move() {
@@ -121,6 +119,7 @@ class Choice {
       this.x =0;
       this.y =0;
       this.diameter =0;
+      r = r + 0.01
       s = s + 0.2
     }
   }
