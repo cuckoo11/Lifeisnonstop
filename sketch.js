@@ -2,6 +2,8 @@ let life;
 var choice = [];
 let s = 70;
 
+let r = 0;
+
 let threshold = 30;
 let accChangeX = 0;
 let accChangeY = 0;
@@ -16,7 +18,6 @@ function setup() {
   for (let i = 0; i < 30; i++) {
   choice.push(new Choice());
   }
-
 }
 
 function draw() {
@@ -68,6 +69,8 @@ class Choice {
     this.oyspeed = this.yspeed;
     this.direction = 0.7;
 
+    r = random(5,10);
+
   }
 
   move() {
@@ -110,7 +113,7 @@ class Choice {
   }
 
   update() {
-    rect(this.x,this.y,this.diameter, this.diameter,5,5);
+    rect(this.x,this.y,this.diameter, this.diameter,r,r);
   }
 
   stop(){
@@ -118,7 +121,7 @@ class Choice {
       this.x =0;
       this.y =0;
       this.diameter =0;
-      s = s+0.2
+      s = s + 0.2
     }
   }
   }
