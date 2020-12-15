@@ -1,5 +1,6 @@
 let life;
 var choice = [];
+let s = 70;
 
 let threshold = 30;
 let accChangeX = 0;
@@ -10,6 +11,7 @@ let accChangeT = 0;
 function setup() {
   createCanvas(displayWidth,displayHeight);
   life = new Life();
+  noStroke();
 
   for (let i = 0; i < 30; i++) {
   choice.push(new Choice());
@@ -18,7 +20,7 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(255);
 
   life.show();
   life.move();
@@ -45,7 +47,7 @@ class Life {
   }
 
   show(){
-    ellipse(this.pos.x,this.pos.y,50,50);
+    ellipse(this.pos.x,this.pos.y,s,s);
   }
 
   move(){
@@ -56,7 +58,7 @@ class Life {
 
 class Choice {
   constructor() {
-        fill(random(0,255),random(0,255),random(0,255));
+    fill(random(0,255),random(0,255),random(0,255));
     this.x = random(width);
     this.y = random(height);
     this.diameter = random(10, 30);
@@ -116,6 +118,7 @@ class Choice {
       this.x =0;
       this.y =0;
       this.diameter =0;
+      s = s+0.2
     }
   }
   }
